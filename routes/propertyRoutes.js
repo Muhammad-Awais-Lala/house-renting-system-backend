@@ -1,0 +1,18 @@
+const express = require('express');
+const router = express.Router();
+const propertyController = require('../controllers/propertyController');
+const auth = require('../middleware/auth');
+const authorize = require('../middleware/authorization');
+
+// Public routes
+router.get('/', propertyController.getAllProperties);
+router.get('/:id', propertyController.getPropertyById);
+router.get('/landlord/:landlordId', propertyController.getLandlordProperties);
+
+// Landlord routes
+router.post('/', auth, authorize('landlord'), propertyController.createProperty);
+router.put('/:id', auth, authorize('landlord'), propertyController.updateProperty);
+router.delete('/:id', auth, authorize('landlord'), propertyController.deleteProperty);
+router.delete('/:id/images/:imageIndex', auth, authorize('landlord'), propertyController.deletePropertyImage);
+
+module.exports = router;
