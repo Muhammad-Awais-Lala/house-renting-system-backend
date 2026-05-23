@@ -4,10 +4,10 @@ const propertyController = require('../controllers/propertyController');
 const auth = require('../middleware/auth');
 const authorize = require('../middleware/authorization');
 
-// Public routes
+// Public routes — specific paths MUST come before parameterized /:id
+router.get('/landlord/:landlordId', propertyController.getLandlordProperties);
 router.get('/', propertyController.getAllProperties);
 router.get('/:id', propertyController.getPropertyById);
-router.get('/landlord/:landlordId', propertyController.getLandlordProperties);
 
 // Landlord routes
 router.post('/', auth, authorize('landlord'), propertyController.createProperty);

@@ -4,6 +4,13 @@ const bookingController = require('../controllers/bookingController');
 const auth = require('../middleware/auth');
 const authorize = require('../middleware/authorization');
 
+// Specific routes MUST come before parameterized /:id
+router.get('/property/:propertyId', auth, authorize('landlord'), bookingController.getPropertyBookings);
+
+// Private routes
+router.get('/', auth, bookingController.getBookings);
+router.get('/:id', auth, bookingController.getBookingById);
+
 // Tenant routes
 router.post('/', auth, authorize('tenant'), bookingController.createBooking);
 router.put('/:id/cancel', auth, authorize('tenant'), bookingController.cancelBooking);
@@ -11,10 +18,5 @@ router.put('/:id/cancel', auth, authorize('tenant'), bookingController.cancelBoo
 // Landlord routes
 router.put('/:id/accept', auth, authorize('landlord'), bookingController.acceptBooking);
 router.put('/:id/reject', auth, authorize('landlord'), bookingController.rejectBooking);
-router.get('/property/:propertyId', auth, authorize('landlord'), bookingController.getPropertyBookings);
-
-// Private routes
-router.get('/', auth, bookingController.getBookings);
-router.get('/:id', auth, bookingController.getBookingById);
 
 module.exports = router;
