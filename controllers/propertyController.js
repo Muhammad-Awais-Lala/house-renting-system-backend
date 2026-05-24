@@ -241,6 +241,7 @@ exports.updateProperty = async (req, res, next) => {
       amenities,
       isAvailable,
       availableFrom,
+      deletedPublicIds,
     } = req.body;
 
     // Validate coordinates if provided
@@ -275,6 +276,22 @@ exports.updateProperty = async (req, res, next) => {
     if (amenities) property.amenities = amenities;
     if (isAvailable !== undefined) property.isAvailable = isAvailable;
     if (availableFrom) property.availableFrom = availableFrom;
+
+    // Handle image deletions
+    if (deletedPublicIds) {
+      const idsToDelete = Array.isArray(deletedPublicIds) ? deletedPublicIds : [deletedPublicIds];
+      
+      for (const pid of idsToDelete) {
+        try {
+          await deleteImage(pid);
+        } catch (err) {
+          console.error(`Failed to delete image ${pid} from Cloudinary:`, err);
+        }
+      }
+      
+      // Remove from property images array
+      property.images = property.images.filter(img => !idsToDelete.includes(img.publicId));
+    }
 
     // Handle new images (buffers → Cloudinary)
     if (req.files && req.files.length > 0) {
