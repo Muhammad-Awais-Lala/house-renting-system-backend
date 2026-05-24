@@ -2,7 +2,7 @@ const Property = require('../models/Property');
 const User = require('../models/User');
 const Review = require('../models/Review');
 const ErrorResponse = require('../utils/errorResponse');
-const cloudinaryService = require('../services/cloudinaryService');
+const { uploadMultipleBuffers, deleteImage } = require('../services/cloudinaryService');
 const { validateCoordinates, validatePrice, validatePropertySize } = require('../utils/validators');
 
 // @route   POST /properties
@@ -61,13 +61,10 @@ exports.createProperty = async (req, res, next) => {
       availableFrom,
     });
 
-    // Handle image uploads
+    // Handle image uploads (buffers → Cloudinary)
     if (req.files && req.files.length > 0) {
       try {
-        const uploadedImages = await cloudinaryService.uploadMultipleImages(
-          req.files.map((file) => file.path)
-        );
-
+        const uploadedImages = await uploadMultipleBuffers(req.files);
         property.images = uploadedImages;
         await property.save();
       } catch (uploadError) {
@@ -279,15 +276,11 @@ exports.updateProperty = async (req, res, next) => {
     if (isAvailable !== undefined) property.isAvailable = isAvailable;
     if (availableFrom) property.availableFrom = availableFrom;
 
-    // Handle new images
+    // Handle new images (buffers → Cloudinary)
     if (req.files && req.files.length > 0) {
       try {
-        const uploadedImages = await cloudinaryService.uploadMultipleImages(
-          req.files.map((file) => file.path)
-        );
-
+        const uploadedImages = await uploadMultipleBuffers(req.files);
         property.images = [...property.images, ...uploadedImages];
-        property.save();
       } catch (uploadError) {
         return next(uploadError);
       }
@@ -325,7 +318,7 @@ exports.deleteProperty = async (req, res, next) => {
     // Delete images from Cloudinary
     if (property.images && property.images.length > 0) {
       try {
-        await Promise.all(property.images.map((img) => cloudinaryService.deleteImage(img.publicId)));
+        await Promise.all(property.images.map((img) => deleteImage(img.publicId)));
       } catch (deleteError) {
         console.error('Error deleting images:', deleteError);
       }
@@ -397,7 +390,7 @@ exports.deletePropertyImage = async (req, res, next) => {
 
     // Delete from Cloudinary
     try {
-      await cloudinaryService.deleteImage(image.publicId);
+      await deleteImage(image.publicId);
     } catch (deleteError) {
       console.error('Error deleting image from Cloudinary:', deleteError);
     }
