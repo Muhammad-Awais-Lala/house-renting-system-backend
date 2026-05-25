@@ -2,56 +2,42 @@ const mongoose = require('mongoose');
 
 const bookingSchema = new mongoose.Schema(
   {
-    tenantId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-      required: [true, 'Tenant ID is required'],
-    },
     propertyId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Property',
       required: [true, 'Property ID is required'],
+    },
+    tenantId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: [true, 'Tenant ID is required'],
     },
     landlordId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
       required: [true, 'Landlord ID is required'],
     },
-    status: {
-      type: String,
-      enum: ['pending', 'accepted', 'rejected', 'cancelled'],
-      default: 'pending',
+    moveInDate: {
+      type: Date,
+      required: [true, 'Move-in date is required'],
     },
-    message: {
+    duration: {
+      type: String,
+      required: [true, 'Duration is required'],
+    },
+    numberOfOccupants: {
+      type: Number,
+      required: [true, 'Number of occupants is required'],
+      min: [1, 'At least one occupant is required'],
+    },
+    messageToLandlord: {
       type: String,
       trim: true,
     },
-    checkInDate: {
-      type: Date,
-    },
-    checkOutDate: {
-      type: Date,
-    },
-    numberOfGuests: {
-      type: Number,
-      default: 1,
-      min: [1, 'At least one guest is required'],
-    },
-    totalPrice: {
-      type: Number,
-      default: 0,
-      min: [0, 'Price must be positive'],
-    },
-    rejectionReason: {
+    bookingStatus: {
       type: String,
-    },
-    createdAt: {
-      type: Date,
-      default: Date.now,
-    },
-    updatedAt: {
-      type: Date,
-      default: Date.now,
+      enum: ['pending', 'approved', 'rejected', 'cancelled'],
+      default: 'pending',
     },
   },
   {
@@ -63,6 +49,6 @@ const bookingSchema = new mongoose.Schema(
 bookingSchema.index({ tenantId: 1, propertyId: 1 });
 bookingSchema.index({ landlordId: 1 });
 bookingSchema.index({ propertyId: 1 });
-bookingSchema.index({ status: 1 });
+bookingSchema.index({ bookingStatus: 1 });
 
 module.exports = mongoose.model('Booking', bookingSchema);

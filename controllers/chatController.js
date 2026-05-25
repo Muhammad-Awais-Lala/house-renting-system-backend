@@ -19,8 +19,8 @@ exports.createOrGetChat = async (req, res, next) => {
       tenantId,
       landlordId
     }).populate('propertyId', 'title images price location')
-      .populate('landlordId', 'name profilePicture')
-      .populate('tenantId', 'name profilePicture')
+      .populate('landlordId', 'firstName lastName profileImage')
+      .populate('tenantId', 'firstName lastName profileImage')
       .populate('lastMessage');
 
     if (chat) {
@@ -37,8 +37,8 @@ exports.createOrGetChat = async (req, res, next) => {
 
     chat = await Chat.findById(chat._id)
       .populate('propertyId', 'title images price location')
-      .populate('landlordId', 'name profilePicture')
-      .populate('tenantId', 'name profilePicture');
+      .populate('landlordId', 'firstName lastName profileImage')
+      .populate('tenantId', 'firstName lastName profileImage');
 
     res.status(201).json({ success: true, chat });
   } catch (error) {
@@ -55,8 +55,8 @@ exports.getUserChats = async (req, res, next) => {
 
     const chats = await Chat.find({ participants: userId })
       .populate('propertyId', 'title images price location')
-      .populate('landlordId', 'name profilePicture')
-      .populate('tenantId', 'name profilePicture')
+      .populate('landlordId', 'firstName lastName profileImage')
+      .populate('tenantId', 'firstName lastName profileImage')
       .populate('lastMessage')
       .sort({ updatedAt: -1 });
 

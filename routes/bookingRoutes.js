@@ -16,7 +16,7 @@ router.post('/', auth, authorize('tenant'), bookingController.createBooking);
 router.put('/:id/cancel', auth, authorize('tenant'), bookingController.cancelBooking);
 
 // Landlord routes
-router.put('/:id/accept', auth, authorize('landlord'), bookingController.acceptBooking);
+router.put('/:id/approve', auth, authorize('landlord'), bookingController.approveBooking);
 router.put('/:id/reject', auth, authorize('landlord'), bookingController.rejectBooking);
 
 module.exports = router;
