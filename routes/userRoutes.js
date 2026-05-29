@@ -17,5 +17,6 @@ router.put('/:id/password', auth, userController.changePassword);
 // Admin routes
 router.get('/', auth, authorize('admin'), userController.getAllUsers);
 router.delete('/:id', auth, authorize('admin'), userController.deleteUser);
+router.put('/:id/block', auth, authorize('admin'), userController.blockUser);
 
 module.exports = router;

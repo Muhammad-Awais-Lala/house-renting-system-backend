@@ -197,6 +197,30 @@ exports.deleteUser = async (req, res, next) => {
   }
 };
 
+// @route   PUT /users/:id/block
+// @desc    Block or unblock a user (Admin only)
+// @access  Private/Admin
+exports.blockUser = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.params.id);
+
+    if (!user) {
+      return next(new ErrorResponse('User not found', 404));
+    }
+
+    user.isActive = !user.isActive;
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: user.isActive ? 'User unblocked successfully' : 'User blocked successfully',
+      user: user.toJSON(),
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 // @route   GET /users/role/:role
 // @desc    Get users by role
 // @access  Public
