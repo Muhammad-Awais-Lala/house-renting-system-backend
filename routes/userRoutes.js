@@ -12,6 +12,7 @@ router.get('/role/:role', userController.getUsersByRole);
 // Private routes
 router.get('/:id', auth, userController.getUserProfile);
 router.put('/:id', auth, userController.updateUserProfile);
+router.put('/:id/password', auth, userController.changePassword);
 
 // Admin routes
 router.get('/', auth, authorize('admin'), userController.getAllUsers);

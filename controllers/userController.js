@@ -219,3 +219,54 @@ exports.getUsersByRole = async (req, res, next) => {
     next(error);
   }
 };
+
+// @route   PUT /users/:id/password
+// @desc    Change user password
+// @access  Private
+exports.changePassword = async (req, res, next) => {
+  try {
+    const { currentPassword, newPassword, confirmPassword } = req.body;
+
+    // Check if user exists
+    // We need to select the password field because it's excluded by default in the schema
+    const user = await User.findById(req.params.id).select('+password');
+    if (!user) {
+      return next(new ErrorResponse('User not found', 404));
+    }
+
+    // Check authorization
+    if (user._id.toString() !== req.user.id) {
+      return next(new ErrorResponse('Not authorized to change this password', 403));
+    }
+
+    // Validate inputs
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      return next(new ErrorResponse('Please provide current password, new password, and confirm password', 400));
+    }
+
+    if (newPassword !== confirmPassword) {
+      return next(new ErrorResponse('New passwords do not match', 400));
+    }
+
+    if (newPassword.length < 6) {
+      return next(new ErrorResponse('Password must be at least 6 characters', 400));
+    }
+
+    // Verify current password
+    const isMatch = await user.comparePassword(currentPassword);
+    if (!isMatch) {
+      return next(new ErrorResponse('Incorrect current password', 401));
+    }
+
+    // Update password
+    user.password = newPassword;
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: 'Password updated successfully',
+    });
+  } catch (error) {
+    next(error);
+  }
+};
