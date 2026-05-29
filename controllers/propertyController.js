@@ -136,7 +136,7 @@ exports.getAllProperties = async (req, res, next) => {
     }
 
     if (search) {
-      query.$text = { $search: search };
+      query.title = { $regex: search, $options: 'i' };
     }
 
     // Calculate pagination
