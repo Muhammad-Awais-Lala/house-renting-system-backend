@@ -10,10 +10,10 @@ router.get('/landlord/:landlordId', propertyController.getLandlordProperties);
 router.get('/', propertyController.getAllProperties);
 router.get('/:id', propertyController.getPropertyById);
 
-// Landlord routes
+// Landlord / Admin routes
 router.post('/', auth, authorize('landlord'), upload.array('images', 6), propertyController.createProperty);
-router.put('/:id', auth, authorize('landlord'), upload.array('images', 6), propertyController.updateProperty);
-router.delete('/:id', auth, authorize('landlord'), propertyController.deleteProperty);
-router.delete('/:id/images/:imageIndex', auth, authorize('landlord'), propertyController.deletePropertyImage);
+router.put('/:id', auth, authorize('landlord', 'admin'), upload.array('images', 6), propertyController.updateProperty);
+router.delete('/:id', auth, authorize('landlord', 'admin'), propertyController.deleteProperty);
+router.delete('/:id/images/:imageIndex', auth, authorize('landlord', 'admin'), propertyController.deletePropertyImage);
 
 module.exports = router;

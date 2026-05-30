@@ -9,10 +9,10 @@ router.get('/property/:propertyId', reviewController.getPropertyReviews);
 router.get('/tenant/:tenantId', reviewController.getTenantReviews);
 router.get('/:id', reviewController.getReviewById);
 
-// Tenant routes
+// Tenant / Admin routes
 router.post('/', auth, authorize('tenant'), reviewController.createReview);
-router.put('/:id', auth, authorize('tenant'), reviewController.updateReview);
-router.delete('/:id', auth, authorize('tenant'), reviewController.deleteReview);
+router.put('/:id', auth, authorize('tenant', 'admin'), reviewController.updateReview);
+router.delete('/:id', auth, authorize('tenant', 'admin'), reviewController.deleteReview);
 
 // Public routes for helpfulness
 router.put('/:id/helpful', reviewController.markHelpful);
