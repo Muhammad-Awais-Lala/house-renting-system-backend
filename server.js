@@ -54,6 +54,7 @@ const bookingRoutes = require('./routes/bookingRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
 const recommendationRoutes = require('./routes/recommendationRoutes');
 const chatRoutes = require('./routes/chatRoutes');
+const inquiryRoutes = require('./routes/inquiryRoutes');
 
 app.use('/api/users', userRoutes);
 app.use('/api/properties', propertyRoutes);
@@ -61,6 +62,7 @@ app.use('/api/bookings', bookingRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/recommendations', recommendationRoutes);
 app.use('/api/chats', chatRoutes);
+app.use('/api/inquiries', inquiryRoutes);
 
 // Health Check Route
 app.get('/api/health', (req, res) => {
