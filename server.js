@@ -15,7 +15,7 @@ const server = http.createServer(app);
 // Socket.io initialization
 const io = new Server(server, {
   cors: {
-    origin: process.env.CLIENT_URL || '*',
+    origin: true,
     methods: ['GET', 'POST'],
     credentials: true,
   }
@@ -38,7 +38,7 @@ app.use(limiter);
 // CORS Configuration
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || '*',
+    origin: true,
     credentials: true,
   })
 );
